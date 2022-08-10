@@ -12,7 +12,33 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      DOCKER_IMAGE: ci/${{ github.job }}
+      BUILD_CACHE: /home/runner/.docker/buildkit
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build -t initialed85/frinkconv-api:$(date +%s) -f docker/Dockerfile .
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ env.BUILD_CACHE }}
+          key: ${{ hashFiles('docker/Dockerfile') }}
+
+      - name: Install the latest buildkit release
+        run: |
+          BUILDKIT_URL="$(curl -sL https://api.github.com/repos/moby/buildkit/releases \
+            | jq -r 'map(select(.name|startswith("v")))|sort_by(.name)[-1].assets[]|select(.name|endswith(".linux-amd64.tar.gz")).browser_download_url')"
+          curl -L "${BUILDKIT_URL}" | sudo tar -xz -C /usr/local
+
+      - name: Start buildkit daemon
+        run: |
+          sudo --non-interactive --shell <<END_SUDO
+            install -d -m 0750 -o root -g docker /run/buildkit
+            buildkitd &
+            while ! test -S /run/buildkit/buildkitd.sock; do sleep 0.1; done
+            chgrp docker /run/buildkit/buildkitd.sock
+          END_SUDO
+
+      - name: Build the Docker image
+        run: docker build -t initialed85/frinkconv-api:$(date +%s) -f docker/Dockerfile .

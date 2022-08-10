@@ -4,13 +4,20 @@ WORKDIR /srv/
 
 COPY go.mod /srv/go.mod
 COPY go.sum /srv/go.sum
-RUN --mount=type=cache,target=/root/.cache/go-build go mod download
+
+# TODO: not supported by GitHub Actions
+# RUN --mount=type=cache,target=/root/.cache/go-build go mod download
+
+RUN go mod download
 
 COPY cmd /srv/cmd
 COPY internal /srv/internal
 COPY pkg /srv/pkg
 
-RUN --mount=type=cache,target=/root/.cache/go-build go build -v -o frinkconv-api /srv/cmd/main.go
+# TODO: not supported by GitHub Actions
+# RUN --mount=type=cache,target=/root/.cache/go-build go build -v -o frinkconv-api /srv/cmd/main.go
+
+RUN go build -v -o frinkconv-api /srv/cmd/main.go
 
 FROM golang:1.17 AS runner
 
