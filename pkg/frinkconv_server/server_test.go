@@ -2,6 +2,8 @@ package frinkconv_server
 
 import (
 	"bytes"
+	"fmt"
+	"github.com/initialed85/frinkconv-api/internal/helpers"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
@@ -14,20 +16,25 @@ func TestServer(t *testing.T) {
 		Timeout: time.Second * 5,
 	}
 
-	server, err := New(8080, 2)
+	port, err := helpers.GetRandomPort()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	server, err := New(port, 2)
 	assert.Nil(t, err)
 
 	defer server.Close()
 
 	response, err := client.Post(
-		"http://localhost:8080/convert/",
+		fmt.Sprintf("http://localhost:%v/convert/", port),
 		"application/json",
 		bytes.NewBuffer([]byte(`{"source_value": 10, "source_units": "apples", "destination_units": "oranges"}`)),
 	)
 	assert.Nil(t, err)
 
 	response, err = client.Post(
-		"http://localhost:8080/convert/",
+		fmt.Sprintf("http://localhost:%v/convert/", port),
 		"application/json",
 		bytes.NewBuffer([]byte(`{"source_value": 10, "source_units": "feet", "destination_units": "inches"}`)),
 	)
@@ -43,7 +50,7 @@ func TestServer(t *testing.T) {
 	_ = response.Body.Close()
 
 	response, err = client.Post(
-		"http://localhost:8080/batch_convert/",
+		fmt.Sprintf("http://localhost:%v/batch_convert/", port),
 		"application/json",
 		bytes.NewBuffer([]byte(`[{"source_value": 10, "source_units": "apples", "destination_units": "oranges"}, {"source_value": 10, "source_units": "feet", "destination_units": "inches"}]`)),
 	)

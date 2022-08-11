@@ -5,5 +5,5 @@ services:
       dockerfile: docker/Dockerfile
       context: ./
     ports:
-      - 8080:8080
-    command: [ "-port", "8080", "-processes", "4" ]
+      - ${PORT}:${PORT}
+    command: [ "-port", "${PORT:-8080}", "-processes", "${PROCESSES:-4}" ]
