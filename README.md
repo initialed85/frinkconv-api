@@ -99,10 +99,10 @@ curl -s -X POST -d '{"source_value": 120.0, "source_units": "apples", "destinati
 }
 ```
 
-**Attempt a batch conversions**
+**Attempt a batch conversion**
 
 ```shell
-# this should succeed and fail
+# this should both succeed and fail, results are index mapped
 curl -s -X POST -d '[{"source_value": 120.0, "source_units": "feet", "destination_units": "metres"}, {"source_value": 120.0, "source_units": "apples", "destination_units": "oranges"}, {"source_value": 120.0, "source_units": "feet", "destination_units": "metres"}, {"source_value": 120.0, "source_units": "apples", "destination_units": "oranges"}]' http://localhost:8080/batch_convert/ | jq
 [
   {
