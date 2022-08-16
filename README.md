@@ -34,6 +34,31 @@ As you'd expect, Docker for Mac is slower due to the virtualization; I daresay t
 
 ## Usage
 
+### Interact with the API as it is deployed on [Fly.io](https://fly.io/)
+
+Attempt a single conversion:
+
+```shell
+curl -s -X POST -d '{"source_value": 120.0, "source_units": "feet", "destination_units": "metres"}' https://frinkconv-api.fly.dev/convert/ | jq
+{
+  "destination_value": 36.576
+}
+```
+
+Attempt a batch conversion:
+
+```shell
+curl -s -X POST -d '[{"source_value": 120.0, "source_units": "feet", "destination_units": "metres"}, {"source_value": 120.0, "source_units": "feet", "destination_units": "metres"}]' https://frinkconv-api.fly.dev/batch_convert/ | jq
+[
+  {
+    "destination_value": 36.576
+  },
+  {
+    "destination_value": 36.576
+  }
+]
+```
+
 ### Run using published Docker image
 
 **Prerequisites**
