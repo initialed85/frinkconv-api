@@ -44,4 +44,4 @@ STOPSIGNAL SIGINT
 
 # note: ensure to use JSON form (square brackets) otherwise Docker wraps CMD w/ bash (which breaks STOPSIGNALs)
 ENTRYPOINT ["/srv/frinkconv-api"]
-CMD ["-port", "8080", "-processes", "4"]
+CMD ["-port", "8080", "-processes", "1"]

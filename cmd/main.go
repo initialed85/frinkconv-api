@@ -9,7 +9,7 @@ import (
 
 func main() {
 	port := flag.Int("port", 8080, "HTTP port to listen on")
-	processes := flag.Int("processes", 4, "Number of frinkconv REPL processes to spawn")
+	processes := flag.Int("processes", 1, "Number of frinkconv REPL processes to spawn")
 
 	flag.Parse()
 
